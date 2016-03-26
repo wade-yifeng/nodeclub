@@ -11,6 +11,10 @@ var config            = require('./config');
 
 var router            = express.Router();
 
+// You can provide multiple callback functions that behave just like middleware, 
+// except that these callbacks can invoke next('route') to bypass the remaining route callback(s). 
+// You can use this mechanism to impose pre-conditions on a route, 
+// then pass control to subsequent routes if there’s no reason to proceed with the current route.
 
 // 主题
 router.get('/topics', topicController.index);

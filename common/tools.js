@@ -1,4 +1,5 @@
 var bcrypt = require('bcryptjs');
+// http://momentjs.com/docs/
 var moment = require('moment');
 
 moment.locale('zh-cn'); // 使用中文

@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var logger   = require('../common/logger');
 var config = require('../config');
 
+// debug模式纪录query到cheese文件中
 if (config.debug) {
   var traceMQuery = function (method, info, query) {
     return function (err, result, millis) {

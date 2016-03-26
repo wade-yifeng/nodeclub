@@ -9,12 +9,21 @@
 var config = require('./config');
 
 if (!config.debug && config.oneapm_key) {
+  // 浏览器性能监控
+  // 将 oneapm.getBrowserTimingHeader() 写到html模板的 <head> 标签的开头。
+  //（如果<head>中存在X-UA-COMPATIBLE HTTP-EQUIV等meta tags，请将语句写到meta tags之后，以便监控的更加精准。）
+  // https://www.npmjs.com/package/oneapm
   require('oneapm');
 }
 
+// get colors in your node.js console
 require('colors');
+// Node.js path module
 var path = require('path');
+// Node静态资源加载器。该模块通过两个步骤配合完成，代码部分根据环境生成标签。
+// 上线时，需要调用minify方法进行静态资源的合并和压缩。
 var Loader = require('loader');
+// Loader Connect是一个适配Connect/Express的静态资源加载器，它基于静态文件的文件扩展名来对源文件进行编译。
 var LoaderConnect = require('loader-connect')
 var express = require('express');
 var session = require('express-session');
@@ -23,6 +32,7 @@ require('./middlewares/mongoose_log'); // 打印 mongodb 查询日志
 require('./models');
 var GitHubStrategy = require('passport-github').Strategy;
 var githubStrategyMiddleware = require('./middlewares/github_strategy');
+// 模块化加载所有的route(controllers, middlewares)
 var webRouter = require('./web_router');
 var apiRouterV1 = require('./api_router_v1');
 var auth = require('./middlewares/auth');
