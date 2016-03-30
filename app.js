@@ -52,7 +52,6 @@ var logger = require('./common/logger');
 var helmet = require('helmet');
 var bytes = require('bytes')
 
-
 // 静态文件目录
 var staticDir = path.join(__dirname, 'public');
 // assets
