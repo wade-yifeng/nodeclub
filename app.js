@@ -34,22 +34,40 @@ var GitHubStrategy = require('passport-github').Strategy;
 var githubStrategyMiddleware = require('./middlewares/github_strategy');
 // 模块化加载所有的route(controllers, middlewares)
 var webRouter = require('./web_router');
+// api router
 var apiRouterV1 = require('./api_router_v1');
 var auth = require('./middlewares/auth');
 var errorPageMiddleware = require('./middlewares/error_page');
 var proxyMiddleware = require('./middlewares/proxy');
+// connect-redis is a Redis session store backed by node_redis, and is insanely fast
+// https://github.com/tj/connect-redis
 var RedisStore = require('connect-redis')(session);
 var _ = require('lodash');
+// CSRF（Cross-site request forgery跨站请求伪造
 var csurf = require('csurf');
 var compress = require('compression');
 var bodyParser = require('body-parser');
+// https://www.npmjs.com/package/busboy
+// busboy 
+// A streaming parser for HTML form data for node.js
 var busboy = require('connect-busboy');
+// This middleware is only intended to be used in a development environment, 
+// as the full error stack traces and internal details of any object passed to this module will be 
+// sent back to the client when an error occurs.
 var errorhandler = require('errorhandler');
+// CORS-CORS(跨来源资源共享)是一份浏览器技术的规范,
+// 提供了Web服务从不同网域传来沙盒脚本的方法,以避开浏览器的同源策略,是JSONP模式的现代版。
 var cors = require('cors');
+// 记录method,url,ip,time
 var requestLog = require('./middlewares/request_log');
+// render时记录日志
 var renderMiddleware = require('./middlewares/render');
 var logger = require('./common/logger');
+// helmet 
+// help secure Express/Connect apps with various HTTP headers
 var helmet = require('helmet');
+// bytes 
+// Utility to parse a string bytes to bytes and vice-versa
 var bytes = require('bytes')
 
 // 静态文件目录
