@@ -24,7 +24,7 @@ var path = require('path');
 // 上线时，需要调用minify方法进行静态资源的合并和压缩。
 var Loader = require('loader');
 // Loader Connect是一个适配Connect/Express的静态资源加载器，它基于静态文件的文件扩展名来对源文件进行编译。
-var LoaderConnect = require('loader-connect')
+var LoaderConnect = require('loader-connect');
 var express = require('express');
 var session = require('express-session');
 var passport = require('passport');
@@ -42,6 +42,7 @@ var proxyMiddleware = require('./middlewares/proxy');
 // connect-redis is a Redis session store backed by node_redis, and is insanely fast
 // https://github.com/tj/connect-redis
 var RedisStore = require('connect-redis')(session);
+// A modern JavaScript utility library delivering modularity, performance, & extras.
 var _ = require('lodash');
 // CSRF（Cross-site request forgery跨站请求伪造
 var csurf = require('csurf');
@@ -68,13 +69,14 @@ var logger = require('./common/logger');
 var helmet = require('helmet');
 // bytes 
 // Utility to parse a string bytes to bytes and vice-versa
-var bytes = require('bytes')
+var bytes = require('bytes');
 
 // 静态文件目录
 var staticDir = path.join(__dirname, 'public');
 // assets
 var assets = {};
 
+// 若配置为需要mini化，则加载asset映射
 if (config.mini_assets) {
   try {
     assets = require('./assets.json');
@@ -84,6 +86,7 @@ if (config.mini_assets) {
   }
 }
 
+// 获取主机名
 var urlinfo = require('url').parse(config.host);
 config.hostname = urlinfo.hostname || config.host;
 
@@ -93,6 +96,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 app.engine('html', require('ejs-mate'));
+// 全局layout变量
 app.locals._layoutFile = 'layout.html';
 app.enable('trust proxy');
 
@@ -108,15 +112,20 @@ if (config.debug) {
 if (config.debug) {
   app.use(LoaderConnect.less(__dirname)); // 测试环境用，编译 .less on the fly
 }
+// public路径指向static目录
 app.use('/public', express.static(staticDir));
 app.use('/agent', proxyMiddleware.proxy);
 
 // 通用的中间件
+// 浏览器中计算和显示相应时间
 app.use(require('response-time')());
+// Only let me be framed by people of the same origin:
 app.use(helmet.frameguard('sameorigin'));
 app.use(bodyParser.json({limit: '1mb'}));
 app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
+// Lets you use HTTP verbs such as PUT or DELETE in places where the client doesn't support it.
 app.use(require('method-override')());
+// signed cookie support by passing a secret string
 app.use(require('cookie-parser')(config.session_secret));
 app.use(compress());
 app.use(session({
@@ -125,6 +134,8 @@ app.use(session({
     port: config.redis_port,
     host: config.redis_host,
   }),
+  // Forces the session to be saved back to the session store, 
+  // even if the session was never modified during the request. 
   resave: true,
   saveUninitialized: true,
 }));
@@ -171,6 +182,7 @@ _.extend(app.locals, {
 app.use(errorPageMiddleware.errorPage);
 _.extend(app.locals, require('./common/render_helper'));
 app.use(function (req, res, next) {
+  // pass the csrfToken to the view
   res.locals.csrf = req.csrfToken ? req.csrfToken() : '';
   next();
 });
